@@ -1,0 +1,27 @@
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, Aer, execute
+
+# Definir el circuito cuántico
+q = QuantumRegister(2)  # Qubits para representar la entrada y salida de la AI
+c = ClassicalRegister(2)  # Bits clásicos para almacenar los resultados
+qc = QuantumCircuit(q, c)
+
+# Preparar el estado inicial
+qc.h(q[0])  # Aplicar una compuerta Hadamard al primer qubit para crear una superposición inicial
+
+# Definir las operaciones de la AI
+qc.cx(q[0], q[1])  # Compuerta CNOT para que el segundo qubit se entrelace con el primero
+
+# Medir los resultados
+qc.measure(q, c)  # Medir los dos qubits y almacenar los resultados en los bits clásicos
+
+# Ejecutar el circuito cuántico en un simulador local
+simulator = Aer.get_backend('qasm_simulator')
+job = execute(qc, simulator, shots=1)
+result = job.result()
+counts = result.get_counts(qc)
+
+# Obtener el resultado de la AI
+output = list(counts.keys())[0]  # Obtener el bitstring resultado de la medición
+
+# Imprimir el resultado de la AI
+print("Output of the AI:", output)
